@@ -133,6 +133,15 @@
   </style>
 
   <script>
+      function fillArray(value, len) {
+        if (len == 0) return [];
+        var a = [value];
+        while (a.length * 2 <= len) a = a.concat(a);
+        if (a.length < len) a = a.concat(a.slice(0, len - a.length));
+        return a;
+      }
+
+
   function fetchImages() {
 
     var token = '7060436.be13e05.6691ed79dd50421f95a09dc182c3fb10',
@@ -164,10 +173,12 @@
               // $(item).css('background-image', `url(${data2.data[x].images.standard_resolution.url})`);
               // $('.grid').append(item);
             }
-            const digits = Array.from({ length: 50 }, () => [randomNumber(4), randomNumber(4)]).concat([[1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1]])
+            const digits = Array.from({ length: 50 }, () => [randomNumber(4), randomNumber(4), images[randomNumber(images.length - 1)]]).concat([Array(50).fill([1,1,"https://scontent.cdninstagram.com/vp/2cb1fad54c6dbda717cbd73621adcd1a/5B04EC5A/t51.2885-15/s640x640/sh0.08/e35/20766900_1595134723863970_2451162905551306752_n.jpg"])])
             // in here instead of mapping over digits we want to map over the array of images we're getting 
             // make the api request and in the success block (after the images come back to us) we want to pass those in to generate HTML
             //
+            // digits.map 
+            debugger;
             const html = digits.map(generateHTML).join('');
             gallery.innerHTML = html;
             const items = document.querySelectorAll('.item');
@@ -196,11 +207,11 @@
   const overlay = document.querySelector('.overlay');
   const overlayImage = overlay.querySelector('img');
   const overlayClose = overlay.querySelector('.close');
-  function generateHTML([h, v]) {
-    debugger;
+  function generateHTML([h, v, src]) {
+
     return `
         <div class="item h${h} v${v}">
-          <img src="${imageURLS[randomNumber(imageURLS.length)]}.jpg">
+          <img src="${src}">
           <div class="item__overlay">
             <button>View →</button>
           </div>
