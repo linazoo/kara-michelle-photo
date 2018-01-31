@@ -9,55 +9,46 @@ function fillArray(value, len) {
 
 function fetchImages() {
 
-var token = '7060436.be13e05.6691ed79dd50421f95a09dc182c3fb10',
-username = 'lilemoji', // rudrastyh - my username :)
-num_photos = 33;
+  var token = '7060436.be13e05.6691ed79dd50421f95a09dc182c3fb10',
+  username = 'lilemoji', // rudrastyh - my username :)
+  num_photos = 33;
 
-const classes = ["item--medium", "item--large"];
-const images = [];
-$.ajax({ // the first ajax request returns the ID of user rudrastyh
-url: 'https://api.instagram.com/v1/users/search',
-dataType: 'jsonp',
-type: 'GET',
-data: { access_token: token, q: username }, // actually it is just the search by username
-success: function (data) {
-  console.log(data);
-  $.ajax({
-    url: 'https://api.instagram.com/v1/users/' + data.data[0].id + '/media/recent', // specify the ID of the first found user
+  const classes = ["item--medium", "item--large"];
+  const images = [];
+  $.ajax({ // the first ajax request returns the ID of user rudrastyh
+    url: 'https://api.instagram.com/v1/users/search',
     dataType: 'jsonp',
     type: 'GET',
-    data: { access_token: token, count: num_photos },
-    success: function (data2) {
-      console.log(data2);
-      for (x in data2.data) {
-        images.push(data2.data[x].images.standard_resolution.url)
-        
-        // var sizeClass = classes[Math.floor(Math.random() * classes.length)]
-        // var item = document.createElement('div');
-        // item.classList += `item ${sizeClass}`;
-        // $(item).css('background-image', `url(${data2.data[x].images.standard_resolution.url})`);
-        // $('.grid').append(item);
-      }
-      const digits = Array.from({ length: 50 }, () => [randomNumber(4), randomNumber(4), images[randomNumber(images.length - 1)]]).concat([Array(50).fill([1,1,"https://scontent.cdninstagram.com/vp/2cb1fad54c6dbda717cbd73621adcd1a/5B04EC5A/t51.2885-15/s640x640/sh0.08/e35/20766900_1595134723863970_2451162905551306752_n.jpg"])])
-      // in here instead of mapping over digits we want to map over the array of images we're getting 
-      // make the api request and in the success block (after the images come back to us) we want to pass those in to generate HTML
-      //
-      // digits.map 
-      const html = digits.map(generateHTML).join('');
-      gallery.innerHTML = html;
-      const items = document.querySelectorAll('.item');
-      items.forEach(item => item.addEventListener('click', handleClick));
-      overlayClose.addEventListener('click', close);
+    data: { access_token: token, q: username }, // actually it is just the search by username
+    success: function (data) {
+      console.log(data);
+      $.ajax({
+        url: 'https://api.instagram.com/v1/users/' + data.data[0].id + '/media/recent', // specify the ID of the first found user
+        dataType: 'jsonp',
+        type: 'GET',
+        data: { access_token: token, count: num_photos },
+        success: function (data2) {
+          console.log(data2);
+          for (x in data2.data) {
+            images.push(data2.data[x].images.standard_resolution.url)
+          }
+          const digits = Array.from({ length: 50 }, () => [randomNumber(4), randomNumber(4), images[randomNumber(images.length - 1)]]).concat([Array(50).fill([1,1,"https://scontent.cdninstagram.com/vp/2cb1fad54c6dbda717cbd73621adcd1a/5B04EC5A/t51.2885-15/s640x640/sh0.08/e35/20766900_1595134723863970_2451162905551306752_n.jpg"])])
+    
+          const html = digits.map(generateHTML).join('');
+          gallery.innerHTML = html;
+          const items = document.querySelectorAll('.item');
+          items.forEach(item => item.addEventListener('click', handleClick));
+          overlayClose.addEventListener('click', close);
+        },
+        error: function (data2) {
+          console.log(data2);
+        }
+      });
     },
-    error: function (data2) {
-      console.log(data2);
+    error: function (data) {
+      console.log(data);
     }
   });
-},
-error: function (data) {
-  console.log(data);
-}
-});
 };
 
 
@@ -65,16 +56,17 @@ error: function (data) {
 
 
 
-const imageURLS = fetchImages();
+// const imageURLS = fetchImages();
 
 const gallery = document.querySelector('.gallery');
 const overlay = document.querySelector('.overlay');
 const overlayImage = overlay.querySelector('img');
 const overlayClose = overlay.querySelector('.close');
+
 function generateHTML([h, v, src]) {
 
 return `
-  <div class="item h${h} v${v}">
+  <div class="item">
     <img src="${src}">
     <div class="item__overlay">
       <button>View →</button>
@@ -93,12 +85,5 @@ overlay.classList.add('open');
 function close() {
 overlay.classList.remove('open');
 }
-// const digits = Array.from({ length: 50 }, () => [randomNumber(4), randomNumber(4)]).concat([[1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1]])
-// // in here instead of mapping over digits we want to map over the array of images we're getting 
-// // make the api request and in the success block (after the images come back to us) we want to pass those in to generate HTML
-// //
-// const html = digits.map(generateHTML).join('');
-// gallery.innerHTML = html;
-// const items = document.querySelectorAll('.item');
-// items.forEach(item => item.addEventListener('click', handleClick));
-// overlayClose.addEventListener('click', close);
+
+fetchImages();
